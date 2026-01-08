@@ -1,48 +1,46 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dragón Dorado | Cliente Frecuente</title>
+  <title>🍣 KOYU | Cliente Frecuente</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Librería lector QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
+
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #8b0000, #b8860b);
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      color: #333;
     }
     .card {
-      background: #fff;
-      padding: 22px;
-      width: 360px;
-      border-radius: 18px;
+      background: #1e1e1e;
+      padding: 25px;
+      width: 350px;
+      border-radius: 15px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
     }
     h1 {
-      margin: 5px 0;
-      color: #b22222;
-    }
-    .subtitle {
-      font-size: 14px;
-      color: #555;
+      margin: 0;
+      color: orange;
     }
     .stamps {
       display: flex;
       justify-content: space-between;
-      margin: 22px 0;
+      margin: 20px 0;
     }
     .stamp {
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      border: 2px dashed #ccc;
+      border: 2px dashed #555;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -50,60 +48,71 @@
       color: white;
     }
     .stamp.active {
-      background: #d4af37;
-      border-color: #d4af37;
+      background: orange;
+      border-color: orange;
     }
     button {
       width: 100%;
       padding: 14px;
       border: none;
-      border-radius: 12px;
-      background: #b22222;
-      color: white;
+      border-radius: 10px;
+      background: orange;
+      color: black;
       font-size: 16px;
       cursor: pointer;
-    }
-    .reward {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #b22222;
+      margin-top: 10px;
     }
     #reader {
       margin-top: 15px;
     }
+    .reward {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #00ff99;
+    }
     .footer {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 12px;
-      color: #777;
+      color: #aaa;
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>🐉 Dragón Dorado</h1>
-    <div class="subtitle">Comida China · Programa de Lealtad</div>
 
-    <p>Escanea el QR en caja después de pagar</p>
+<div class="card">
+  <h1>🍣 KOYU</h1>
+  <p>Tarjeta de cliente frecuente</p>
 
-    <div class="stamps" id="stamps"></div>
+  <div class="stamps" id="stamps"></div>
 
-    <button onclick="startScan()">Escanear QR</button>
-    <div id="reader"></div>
-    <div class="reward" id="reward"></div>
+  <button onclick="startScan()">Escanear QR</button>
 
-    <div class="footer">5 visitas = platillo gratis</div>
-  </div>
+  <div id="reader"></div>
+  <div class="reward" id="reward"></div>
 
-  <script>
+  <div class="footer">5 visitas = platillo gratis</div>
+</div>
+
+<script>
   const MAX_VISITS = 5;
-  const QR_KEY = "KOYU-CLIENTE-OK";
 
   let visits = Number(localStorage.getItem("visits")) || 0;
   let lastScan = localStorage.getItem("lastScan") || "";
 
   const today = new Date().toISOString().split("T")[0];
+
   const stampsContainer = document.getElementById("stamps");
   const reward = document.getElementById("reward");
+
+  // 🔐 Código dinámico del día (AUTOMÁTICO)
+  function getDailyCode() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `KOYU-${y}-${m}-${day}`;
+  }
 
   function renderStamps() {
     stampsContainer.innerHTML = "";
@@ -115,7 +124,7 @@
     }
 
     if (visits >= MAX_VISITS) {
-      reward.textContent = "🎉 ¡Platillo gratis!";
+      reward.textContent = "🎉 ¡Platillo GRATIS!";
     } else {
       reward.textContent = "";
     }
@@ -123,7 +132,7 @@
 
   function startScan() {
     if (lastScan === today) {
-      alert("⚠️ Ya se registró una visita hoy");
+      alert("⚠️ Ya registraste una visita hoy");
       return;
     }
 
@@ -135,19 +144,18 @@
       (text) => {
         console.log("QR leído:", text);
 
-        // 🔑 SOLO ES UNA INSTRUCCIÓN, NO REDIRECCIÓN
-        if (text.includes(QR_KEY) && visits < MAX_VISITS) {
+        // ✅ SOLO valida, NO redirige, NO abre nada
+        if (text.includes(getDailyCode()) && visits < MAX_VISITS) {
           visits++;
           localStorage.setItem("visits", visits);
           localStorage.setItem("lastScan", today);
 
           renderStamps();
 
-          // ⛔ DETENER ESCÁNER (IMPORTANTE)
           qr.stop();
         }
       },
-      (error) => {}
+      () => {}
     );
   }
 
