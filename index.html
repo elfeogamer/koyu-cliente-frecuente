@@ -2,142 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dragón Dorado | Cliente Frecuente</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://unpkg.com/html5-qrcode"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #8b0000, #b8860b);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      color: #333;
-    }
-    .card {
-      background: #fff;
-      padding: 22px;
-      width: 360px;
-      border-radius: 18px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    h1 {
-      margin: 5px 0;
-      color: #b22222;
-    }
-    .subtitle {
-      font-size: 14px;
-      color: #555;
-    }
-    .stamps {
-      display: flex;
-      justify-content: space-between;
-      margin: 22px 0;
-    }
-    .stamp {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      border: 2px dashed #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: white;
-    }
-    .stamp.active {
-      background: #d4af37;
-      border-color: #d4af37;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: #b22222;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .reward {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #b22222;
-    }
-    #reader {
-      margin-top: 15px;
-    }
-    .footer {
-      margin-top: 12px;
-      font-size: 12px;
-      color: #777;
-    }
-  </style>
+  <title>Cliente Frecuente KOYU</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <div class="card">
-    <h1>🐉 Dragón Dorado</h1>
-    <div class="subtitle">Comida China · Programa de Lealtad</div>
+    <h1>🍣 KOYU</h1>
+    <p>Tarjeta de cliente frecuente</p>
 
-    <p>Escanea el QR en caja después de pagar</p>
+    <div class="visits">
+      <span id="count">0</span>/5 visitas
+    </div>
 
-    <div class="stamps" id="stamps"></div>
+    <p id="message"></p>
 
-    <button onclick="startScan()">Escanear QR</button>
-    <div id="reader"></div>
-    <div class="reward" id="reward"></div>
-
-    <div class="footer">5 visitas = platillo gratis</div>
+    <button onclick="resetCard()">Reiniciar tarjeta</button>
   </div>
 
-  <script>
-    const maxVisits = 5;
-    let visits = Number(localStorage.getItem('visits')) || 0;
-    let lastScan = localStorage.getItem('lastScan') || '';
-
-    const today = new Date().toISOString().split('T')[0];
-    const stampsContainer = document.getElementById('stamps');
-    const reward = document.getElementById('reward');
-
-    function renderStamps() {
-      stampsContainer.innerHTML = '';
-      for (let i = 1; i <= maxVisits; i++) {
-        const s = document.createElement('div');
-        s.className = 'stamp' + (i <= visits ? ' active' : '');
-        if (i <= visits) s.textContent = '✓';
-        stampsContainer.appendChild(s);
-      }
-      if (visits >= maxVisits) {
-        reward.textContent = '🎉 ¡Felicidades! Reclama tu platillo gratis';
-      }
-    }
-
-    function startScan() {
-      if (lastScan === today) {
-        alert('Este QR ya fue usado hoy');
-        return;
-      }
-
-      const qr = new Html5Qrcode('reader');
-      qr.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: 220 },
-        (text) => {
-          if (text === 'DRAGON-DORADO-OK' && visits < maxVisits) {
-            visits++;
-            localStorage.setItem('visits', visits);
-            localStorage.setItem('lastScan', today);
-            renderStamps();
-            qr.stop();
-          }
-        }
-      );
-    }
-
-    renderStamps();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
