@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>🐉 Dragón Dorado | Cliente Frecuente</title>
+  <title>KOYU | Cliente Frecuente</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <link rel="icon" type="image/png" href="koyu-emoji.png">
+  <link rel="apple-touch-icon" href="koyu-emoji.png">
+
+  
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
@@ -31,6 +35,15 @@
     h1 {
       margin: 5px 0;
       color: #b22222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    h1 img {
+      width: 32px;
+      height: 32px;
     }
 
     .subtitle {
@@ -93,7 +106,11 @@
 
 <body>
   <div class="card">
-    <h1>🐉 Dragón Dorado</h1>
+    <h1>
+      <img src="koyu-emoji.png" alt="KOYU">
+      KOYU
+    </h1>
+
     <div class="subtitle">Programa de Lealtad</div>
 
     <p>Escanea el QR en caja después de pagar</p>
