@@ -2,165 +2,155 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>🍣 KOYU | Cliente Frecuente</title>
+  <title>🐉 Dragón Dorado | Cliente Frecuente</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Librería lector QR -->
+  <!-- LIBRERÍA QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
+      background: linear-gradient(135deg, #8b0000, #b8860b);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
     }
+
     .card {
-      background: #1e1e1e;
-      padding: 25px;
-      width: 350px;
-      border-radius: 15px;
+      background: #fff;
+      width: 360px;
+      padding: 22px;
+      border-radius: 18px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
+
     h1 {
-      margin: 0;
-      color: orange;
+      margin: 5px 0;
+      color: #b22222;
     }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+    }
+
     .stamps {
       display: flex;
       justify-content: space-between;
-      margin: 20px 0;
+      margin: 22px 0;
     }
+
     .stamp {
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      border: 2px dashed #555;
+      border: 2px dashed #ccc;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
       color: white;
     }
+
     .stamp.active {
-      background: orange;
-      border-color: orange;
+      background: #d4af37;
+      border-color: #d4af37;
     }
+
     button {
       width: 100%;
       padding: 14px;
       border: none;
-      border-radius: 10px;
-      background: orange;
-      color: black;
+      border-radius: 12px;
+      background: #b22222;
+      color: white;
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
     }
+
     #reader {
       margin-top: 15px;
     }
+
     .reward {
       margin-top: 15px;
       font-weight: bold;
-      color: #00ff99;
+      color: #b22222;
     }
+
     .footer {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 12px;
-      color: #aaa;
+      color: #777;
     }
   </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h1>🍣 KOYU</h1>
-  <p>Tarjeta de cliente frecuente</p>
+  <div class="card">
+    <h1>🐉 Dragón Dorado</h1>
+    <div class="subtitle">Programa de Cliente Frecuente</div>
 
-  <div class="stamps" id="stamps"></div>
+    <p>Escanea el QR en caja</p>
 
-  <button onclick="startScan()">Escanear QR</button>
+    <div class="stamps" id="stamps"></div>
 
-  <div id="reader"></div>
-  <div class="reward" id="reward"></div>
+    <button onclick="startScan()">📷 Escanear QR</button>
+    <button onclick="resetCard()">♻️ Reiniciar tarjeta</button>
 
-  <div class="footer">5 visitas = platillo gratis</div>
-</div>
+    <div id="reader"></div>
+    <div class="reward" id="reward"></div>
 
-<script>
-  const MAX_VISITS = 5;
+    <div class="footer">5 visitas = platillo gratis</div>
+  </div>
 
-  let visits = Number(localStorage.getItem("visits")) || 0;
-  let lastScan = localStorage.getItem("lastScan") || "";
+  <script>
+    const MAX_VISITS = 5;
+    const QR_SECRET = "KOYU-CLIENTE-OK";
 
-  const today = new Date().toISOString().split("T")[0];
+    let visits = Number(localStorage.getItem("visits")) || 0;
+    let lastScan = localStorage.getItem("lastScan") || "";
 
-  const stampsContainer = document.getElementById("stamps");
-  const reward = document.getElementById("reward");
+    const today = new Date().toISOString().split("T")[0];
+    const stampsContainer = document.getElementById("stamps");
+    const reward = document.getElementById("reward");
 
-  // 🔐 Código dinámico del día (AUTOMÁTICO)
-  function getDailyCode() {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `KOYU-${y}-${m}-${day}`;
-  }
+    function renderStamps() {
+      stampsContainer.innerHTML = "";
 
-  function renderStamps() {
-    stampsContainer.innerHTML = "";
-    for (let i = 1; i <= MAX_VISITS; i++) {
-      const s = document.createElement("div");
-      s.className = "stamp" + (i <= visits ? " active" : "");
-      if (i <= visits) s.textContent = "✓";
-      stampsContainer.appendChild(s);
+      for (let i = 1; i <= MAX_VISITS; i++) {
+        const s = document.createElement("div");
+        s.className = "stamp" + (i <= visits ? " active" : "");
+        if (i <= visits) s.textContent = "✓";
+        stampsContainer.appendChild(s);
+      }
+
+      if (visits >= MAX_VISITS) {
+        reward.textContent = "🎉 ¡Platillo GRATIS!";
+      } else {
+        reward.textContent = "";
+      }
     }
 
-    if (visits >= MAX_VISITS) {
-      reward.textContent = "🎉 ¡Platillo GRATIS!";
-    } else {
-      reward.textContent = "";
-    }
-  }
+    function startScan() {
+      if (lastScan === today) {
+        alert("Este QR ya fue usado hoy");
+        return;
+      }
 
-  function startScan() {
-    if (lastScan === today) {
-      alert("⚠️ Ya registraste una visita hoy");
-      return;
-    }
+      const qr = new Html5Qrcode("reader");
 
-    const qr = new Html5Qrcode("reader");
-
-    qr.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 220 },
-      (text) => {
-        console.log("QR leído:", text);
-
-        // ✅ SOLO valida, NO redirige, NO abre nada
-        if (text.includes(getDailyCode()) && visits < MAX_VISITS) {
-          visits++;
-          localStorage.setItem("visits", visits);
-          localStorage.setItem("lastScan", today);
-
-          renderStamps();
-
-          qr.stop();
-        }
-      },
-      () => {}
-    );
-  }
-
-  renderStamps();
-</script>
-
-</body>
-</html>
+      qr.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 220 },
+        (text) => {
+          if (text === QR_SECRET && visits < MAX_VISITS) {
+            visits++;
+            localStorage.setItem("visits", visits);
+            localStorage.setIt
