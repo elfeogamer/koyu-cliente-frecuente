@@ -2,24 +2,71 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cliente Frecuente KOYU</title>
-  <link rel="stylesheet" href="style.css">
+  <title>QR KOYU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    .box {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+    }
+    .ok {
+      color: #00ff88;
+      font-size: 22px;
+      margin-top: 15px;
+    }
+    .error {
+      color: #ff5555;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
 
-  <div class="card">
+  <div class="box">
     <h1>🍣 KOYU</h1>
-    <p>Tarjeta de cliente frecuente</p>
-
-    <div class="visits">
-      <span id="count">0</span>/5 visitas
-    </div>
-
-    <p id="message"></p>
-
-    <button onclick="resetCard()">Reiniciar tarjeta</button>
+    <p id="msg">Validando QR...</p>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const MAX_VISITS = 5;
+    const VALID_CODE = "KOYU-CLIENTE-OK";
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    const today = new Date().toISOString().split("T")[0];
+
+    let visits = Number(localStorage.getItem("visits")) || 0;
+    let lastVisit = localStorage.getItem("lastVisit");
+
+    const msg = document.getElementById("msg");
+
+    if (code !== VALID_CODE) {
+      msg.innerHTML = "❌ QR no válido";
+    } else if (lastVisit === today) {
+      msg.innerHTML = "⚠️ Ya registraste tu visita hoy";
+    } else if (visits >= MAX_VISITS) {
+      msg.innerHTML = "🎉 Ya tienes tu platillo gratis";
+    } else {
+      visits++;
+      localStorage.setItem("visits", visits);
+      localStorage.setItem("lastVisit", today);
+      msg.innerHTML = `<div class="ok">✅ Visita registrada<br>${visits}/${MAX_VISITS}</div>`;
+    }
+  </script>
+
 </body>
 </html>
