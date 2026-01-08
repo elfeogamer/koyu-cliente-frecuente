@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cliente Frecuente KOYU</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <h1>🍣 KOYU</h1>
+    <p>Tarjeta de cliente frecuente</p>
+
+    <div class="visits">
+      <span id="count">0</span>/5 visitas
+    </div>
+
+    <p id="message"></p>
+
+    <button onclick="resetCard()">Reiniciar tarjeta</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
