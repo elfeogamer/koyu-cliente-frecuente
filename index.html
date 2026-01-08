@@ -95,50 +95,64 @@
   </div>
 
   <script>
-    const maxVisits = 5;
-    let visits = Number(localStorage.getItem('visits')) || 0;
-    let lastScan = localStorage.getItem('lastScan') || '';
+  const MAX_VISITS = 5;
+  const QR_KEY = "KOYU-CLIENTE-OK";
 
-    const today = new Date().toISOString().split('T')[0];
-    const stampsContainer = document.getElementById('stamps');
-    const reward = document.getElementById('reward');
+  let visits = Number(localStorage.getItem("visits")) || 0;
+  let lastScan = localStorage.getItem("lastScan") || "";
 
-    function renderStamps() {
-      stampsContainer.innerHTML = '';
-      for (let i = 1; i <= maxVisits; i++) {
-        const s = document.createElement('div');
-        s.className = 'stamp' + (i <= visits ? ' active' : '');
-        if (i <= visits) s.textContent = '✓';
-        stampsContainer.appendChild(s);
-      }
-      if (visits >= maxVisits) {
-        reward.textContent = '🎉 ¡Felicidades! Reclama tu platillo gratis';
-      }
+  const today = new Date().toISOString().split("T")[0];
+  const stampsContainer = document.getElementById("stamps");
+  const reward = document.getElementById("reward");
+
+  function renderStamps() {
+    stampsContainer.innerHTML = "";
+    for (let i = 1; i <= MAX_VISITS; i++) {
+      const s = document.createElement("div");
+      s.className = "stamp" + (i <= visits ? " active" : "");
+      if (i <= visits) s.textContent = "✓";
+      stampsContainer.appendChild(s);
     }
 
-    function startScan() {
-      if (lastScan === today) {
-        alert('Este QR ya fue usado hoy');
-        return;
-      }
+    if (visits >= MAX_VISITS) {
+      reward.textContent = "🎉 ¡Platillo gratis!";
+    } else {
+      reward.textContent = "";
+    }
+  }
 
-      const qr = new Html5Qrcode('reader');
-      qr.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: 220 },
-        (text) => {
-          if (text === 'DRAGON-DORADO-OK' && visits < maxVisits) {
-            visits++;
-            localStorage.setItem('visits', visits);
-            localStorage.setItem('lastScan', today);
-            renderStamps();
-            qr.stop();
-          }
+  function startScan() {
+    if (lastScan === today) {
+      alert("⚠️ Ya se registró una visita hoy");
+      return;
+    }
+
+    const qr = new Html5Qrcode("reader");
+
+    qr.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 220 },
+      (text) => {
+        console.log("QR leído:", text);
+
+        // 🔑 SOLO ES UNA INSTRUCCIÓN, NO REDIRECCIÓN
+        if (text.includes(QR_KEY) && visits < MAX_VISITS) {
+          visits++;
+          localStorage.setItem("visits", visits);
+          localStorage.setItem("lastScan", today);
+
+          renderStamps();
+
+          // ⛔ DETENER ESCÁNER (IMPORTANTE)
+          qr.stop();
         }
-      );
-    }
+      },
+      (error) => {}
+    );
+  }
 
-    renderStamps();
-  </script>
+  renderStamps();
+</script>
+
 </body>
 </html>
