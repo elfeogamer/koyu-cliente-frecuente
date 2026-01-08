@@ -70,6 +70,7 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     #reader {
@@ -100,6 +101,7 @@
     <div class="stamps" id="stamps"></div>
 
     <button onclick="startScan()">📷 Escanear QR</button>
+    <button onclick="resetCard()">♻️ Reiniciar visitas</button>
 
     <div id="reader"></div>
     <div class="reward" id="reward"></div>
@@ -130,6 +132,8 @@
 
       if (visits >= MAX_VISITS) {
         reward.textContent = "🎉 ¡Felicidades! Reclama tu platillo gratis";
+      } else {
+        reward.textContent = "";
       }
     }
 
@@ -154,6 +158,17 @@
           }
         }
       );
+    }
+
+    function resetCard() {
+      if (!confirm("¿Reiniciar las visitas?")) return;
+
+      localStorage.removeItem("visits");
+      localStorage.removeItem("lastScan");
+
+      visits = 0;
+      lastScan = "";
+      renderStamps();
     }
 
     renderStamps();
