@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: #1e1e1e;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+}
+
+.visits {
+  font-size: 28px;
+  margin: 20px 0;
+  color: orange;
+}
+
+button {
+  background: orange;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
